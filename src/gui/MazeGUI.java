@@ -47,6 +47,7 @@ public class MazeGUI extends Application implements Observer{
         generateDFSButton.setOnAction(event -> {
             Generator dfsMaze = new DFS(model);
             this.model.maze = dfsMaze.generate();
+            this.model.announceChange();
         });
         commandButtons.getChildren().addAll(generateDFSButton);
 
