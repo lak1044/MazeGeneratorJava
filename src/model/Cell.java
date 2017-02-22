@@ -14,15 +14,15 @@ public class Cell {
     private boolean E;
     private boolean visited;
     private Cell parent;
-    private List<Cell> neigbors;
+    //private List<Cell> neigbors;
 
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;
         this.N = true;
         this.S = true;
-        this.E = true;
         this.W = true;
+        this.E = true;
         this.visited = false;
         this.parent = null;
     }
@@ -44,7 +44,25 @@ public class Cell {
         }
     }
 
+    public boolean isVisited() {return this.visited;}
     public void visit() {
         this.visited = true;
+    }
+
+    public boolean[] dirs() {
+        boolean[] dirs = new boolean[4];
+        if (this.N) {
+            dirs[0] = true;
+        }
+        if (this.S) {
+            dirs[1] = true;
+        }
+        if (this.W) {
+            dirs[2] = true;
+        }
+        if (this.E) {
+            dirs[3] = true;
+        }
+        return dirs;
     }
 }

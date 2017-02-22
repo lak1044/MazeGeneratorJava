@@ -1,5 +1,6 @@
 package generator;
 
+import model.Cell;
 import model.MazeModel;
 
 /**
@@ -7,5 +8,5 @@ import model.MazeModel;
  */
 public interface Generator {
 
-    public MazeModel generate(MazeModel mazeModel);
+    Cell[][] generate();
 }

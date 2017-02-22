@@ -1,6 +1,9 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+import java.util.Random;
 
 /**
  * Created by lak1044 on 2/20/2017.
@@ -9,20 +12,17 @@ public class MazeModel extends Observable{
     public Cell[][] maze;
     public static int rows;
     public static int cols;
-    boolean solved;
-    boolean generated;
 
     public MazeModel(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        this.solved = false;
-        this.generated = false;
         this.maze = new Cell[this.rows][this.cols];
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 this.maze[i][j] = new Cell(i, j);
             }
         }
+        this.announceChange();
     }
 
 
@@ -40,5 +40,36 @@ public class MazeModel extends Observable{
             c1.removeWall('W');
             c2.removeWall('E');
         }
+    }
+
+    public Cell getRandomNeighbor(Cell cell) {
+        List<Cell> neighbors = new ArrayList<>();
+        if (inMaze(cell.row -1, cell.col) && !maze[cell.row - 1][cell.col].isVisited()) {
+            neighbors.add(maze[cell.row - 1][cell.col]);
+        }
+        if (inMaze(cell.row + 1, cell.col) && !maze[cell.row + 1][cell.col].isVisited()) {
+            neighbors.add(maze[cell.row + 1][cell.col]);
+        }
+        if (inMaze(cell.row, cell.col - 1) && !maze[cell.row][cell.col - 1].isVisited()) {
+            neighbors.add(maze[cell.row][cell.col - 1]);
+        }
+        if (inMaze(cell.row, cell.col + 1) && !maze[cell.row][cell.col + 1].isVisited()) {
+            neighbors.add(maze[cell.row][cell.col + 1]);
+        }
+        if (!neighbors.isEmpty()) {
+            return neighbors.get(new Random().nextInt(neighbors.size()));
+        } else {
+            return null;
+        }
+    }
+
+    private boolean inMaze(int row, int col) {
+        return (row >= 0 && row < rows && col >= 0 && col < cols);
+    }
+
+
+    public void announceChange() {
+        setChanged();
+        notifyObservers();
     }
 }
