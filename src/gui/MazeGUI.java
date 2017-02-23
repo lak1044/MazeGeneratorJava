@@ -1,7 +1,5 @@
 package gui;
 
-import generator.DFS;
-import generator.Generator;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -13,6 +11,9 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import model.MazeModel;
+import model.generator.DFS;
+import model.generator.Generator;
+import sun.security.x509.GeneralName;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -31,13 +32,13 @@ public class MazeGUI extends Application implements Observer{
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private static final int CELLWIDTH = 15;
+    private static final int CELL_WIDTH = 15;
 
     private Stage stage;
 
     @Override
     public void init() {
-        this.model = new MazeModel(30, 30);
+        this.model = new MazeModel(10, 10);
         this.model.addObserver(this);
     }
 
@@ -45,9 +46,14 @@ public class MazeGUI extends Application implements Observer{
         VBox commandButtons = new VBox();
         Button generateDFSButton = new Button("Generate DFS");
         generateDFSButton.setOnAction(event -> {
-            Generator dfsMaze = new DFS(model);
-            this.model.maze = dfsMaze.generate();
-            this.model.announceChange();
+            try {
+                DFS dfsMaze = new DFS();
+                while (!dfsMaze.getGenerated()) {
+                    dfsMaze.generate();
+                }
+                this.model = dfsMaze;
+            } catch (Exception e) {}
+            drawMaze();
         });
         commandButtons.getChildren().addAll(generateDFSButton);
 
@@ -62,28 +68,28 @@ public class MazeGUI extends Application implements Observer{
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setLineWidth(1);
 
-        for (int i = 0; i < model.rows; i++) {
-            for (int j = 0; j < model.cols; j++) {
-                x = j * CELLWIDTH;
-                y = i * CELLWIDTH;
-                if (model.maze[i][j].isVisited()) {
+        for (int i = 0; i < MazeModel.rows; i++) {
+            for (int j = 0; j < MazeModel.cols; j++) {
+                x = j * CELL_WIDTH;
+                y = i * CELL_WIDTH;
+                if (model.maze[i][j].getVisited()) {
                     gc.setFill(Color.RED);
                 } else {
                     gc.setFill(Color.WHITE);
                 }
-                gc.fillRect(x, y, CELLWIDTH, CELLWIDTH);
+                gc.fillRect(x, y, CELL_WIDTH, CELL_WIDTH);
                 dirs = model.maze[i][j].dirs();
                 if (dirs[0]) {
-                    gc.strokeLine(x, y, x + CELLWIDTH, y);
+                    gc.strokeLine(x, y, x + CELL_WIDTH, y);
                 }
                 if (dirs[1]) {
-                    gc.strokeLine(x, y +CELLWIDTH, x + CELLWIDTH, y + CELLWIDTH);
+                    gc.strokeLine(x, y + CELL_WIDTH, x + CELL_WIDTH, y + CELL_WIDTH);
                 }
                 if (dirs[2]) {
-                    gc.strokeLine(x, y, x, y + CELLWIDTH);
+                    gc.strokeLine(x, y, x, y + CELL_WIDTH);
                 }
                 if (dirs[3]) {
-                    gc.strokeLine(x + CELLWIDTH, y, x + CELLWIDTH, y + CELLWIDTH);
+                    gc.strokeLine(x + CELL_WIDTH, y, x + CELL_WIDTH, y + CELL_WIDTH);
                 }
             }
         }
@@ -93,7 +99,7 @@ public class MazeGUI extends Application implements Observer{
         borderPane = new BorderPane();
         //borderPane.setCenter(constructMazeGrid());
         borderPane.setRight(constructCommandButtons());
-        canvas = new Canvas(model.cols * CELLWIDTH, model.rows * CELLWIDTH);
+        canvas = new Canvas(MazeModel.cols * CELL_WIDTH, MazeModel.rows * CELL_WIDTH);
         gc = canvas.getGraphicsContext2D();
         borderPane.setCenter(canvas);
         Scene scene = new Scene(borderPane);

@@ -1,13 +1,12 @@
 package model;
 
-import java.util.List;
 
 /**
  * Created by lak1044 on 2/20/2017.
  */
 public class Cell {
-    int row;
-    int col;
+    private int row;
+    private int col;
     private boolean N;
     private boolean S;
     private boolean W;
@@ -16,7 +15,7 @@ public class Cell {
     private Cell parent;
     //private List<Cell> neigbors;
 
-    public Cell(int row, int col) {
+     Cell(int row, int col) {
         this.row = row;
         this.col = col;
         this.N = true;
@@ -26,6 +25,11 @@ public class Cell {
         this.visited = false;
         this.parent = null;
     }
+    /////////////Getters/////////////////
+    public int getRow() {return this.row;}
+    public int getCol() {return this.col;}
+    public boolean getVisited() {return this.visited;}
+
 
     public void removeWall(char wall) {
         switch (wall) {
@@ -44,7 +48,6 @@ public class Cell {
         }
     }
 
-    public boolean isVisited() {return this.visited;}
     public void visit() {
         this.visited = true;
     }
