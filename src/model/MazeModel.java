@@ -9,10 +9,10 @@ public class MazeModel extends Observable{
     public Cell[][] maze;
     public static int rows;
     public static int cols;
+    public static Cell current;
 
 
     public MazeModel(int rows, int cols) {
-
         MazeModel.rows = rows;
         MazeModel.cols = cols;
         this.maze = new Cell[MazeModel.rows][MazeModel.cols];
@@ -21,6 +21,7 @@ public class MazeModel extends Observable{
                 this.maze[i][j] = new Cell(i, j);
             }
         }
+        MazeModel.current = maze[0][0];
         System.out.println("MazeModel created");
     }
 

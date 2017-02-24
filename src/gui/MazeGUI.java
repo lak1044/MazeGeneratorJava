@@ -38,7 +38,7 @@ public class MazeGUI extends Application implements Observer{
 
     @Override
     public void init() {
-        this.model = new MazeModel(10, 10);
+        this.model = new MazeModel(25, 25);
         this.model.addObserver(this);
     }
 
@@ -48,12 +48,11 @@ public class MazeGUI extends Application implements Observer{
         generateDFSButton.setOnAction(event -> {
             try {
                 DFS dfsMaze = new DFS();
-                while (!dfsMaze.getGenerated()) {
-                    dfsMaze.generate();
-                }
+                dfsMaze.addObserver(this);
+                Thread dfsThread = new Thread(dfsMaze);
                 this.model = dfsMaze;
+                dfsThread.start();
             } catch (Exception e) {}
-            drawMaze();
         });
         commandButtons.getChildren().addAll(generateDFSButton);
 
@@ -64,7 +63,6 @@ public class MazeGUI extends Application implements Observer{
         int x;
         int y;
         boolean[] dirs;
-        gc.save();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setLineWidth(1);
 
@@ -72,8 +70,10 @@ public class MazeGUI extends Application implements Observer{
             for (int j = 0; j < MazeModel.cols; j++) {
                 x = j * CELL_WIDTH;
                 y = i * CELL_WIDTH;
-                if (model.maze[i][j].getVisited()) {
+                if (model.maze[i][j].getPermanent()) {
                     gc.setFill(Color.RED);
+                } else if (model.maze[i][j].getTemporary()) {
+                    gc.setFill(Color.YELLOW);
                 } else {
                     gc.setFill(Color.WHITE);
                 }
@@ -95,6 +95,13 @@ public class MazeGUI extends Application implements Observer{
         }
     }
 
+    private void drawCurrent() {
+        int x = MazeModel.current.getCol() * CELL_WIDTH;
+        int y = MazeModel.current.getRow() * CELL_WIDTH;
+        gc.setFill(Color.LIME);
+        gc.fillRect(x, y, CELL_WIDTH, CELL_WIDTH);
+    }
+
     private void init(Stage stage) {
         borderPane = new BorderPane();
         //borderPane.setCenter(constructMazeGrid());
@@ -110,6 +117,7 @@ public class MazeGUI extends Application implements Observer{
     @Override
     public void update(Observable o, Object arg) {
         drawMaze();
+        drawCurrent();
     }
 
     @Override

@@ -7,7 +7,7 @@ import model.MazeModel;
 /**
  * Created by lak1044 on 2/23/2017.
  */
-public abstract class Generator extends MazeModel{//implements Runnable {
+public abstract class Generator extends MazeModel implements Runnable {
     private boolean generated;
 
     Generator() {
@@ -16,7 +16,7 @@ public abstract class Generator extends MazeModel{//implements Runnable {
         System.out.println("Generator created");
     }
 
-    public boolean getGenerated() {return this.generated;}
+    private boolean getGenerated() {return this.generated;}
     void setGenerated() {
         this.generated = true;
         this.announceChange();
@@ -39,4 +39,14 @@ public abstract class Generator extends MazeModel{//implements Runnable {
         }
     }
 
+    @Override
+    public void run() {
+        while (!this.getGenerated()) {
+            try {
+                generate();
+                announceChange();
+                Thread.sleep(20);
+            } catch (Exception e) {}
+        }
+    }
 }

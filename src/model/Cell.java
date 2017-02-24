@@ -13,6 +13,9 @@ public class Cell {
     private boolean E;
     private boolean visited;
     private Cell parent;
+    private boolean temporary;
+    private boolean permanent;
+
     //private List<Cell> neigbors;
 
      Cell(int row, int col) {
@@ -24,11 +27,25 @@ public class Cell {
         this.E = true;
         this.visited = false;
         this.parent = null;
+        this.temporary = false;
+        this.permanent = false;
     }
     /////////////Getters/////////////////
     public int getRow() {return this.row;}
     public int getCol() {return this.col;}
     public boolean getVisited() {return this.visited;}
+    public boolean getTemporary() {return this.temporary;}
+    public boolean getPermanent() {return this.permanent;}
+
+    ////////////Setters////////////////
+    public void setTemporary() {
+         this.temporary = true;
+         this.permanent = false;
+    }
+    public void setPermanent() {
+         this.temporary = false;
+         this.permanent = true;
+    }
 
 
     public void removeWall(char wall) {

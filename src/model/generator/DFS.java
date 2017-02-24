@@ -10,44 +10,40 @@ import java.util.Stack;
  * Created by lak1044 on 2/20/2017.
  */
 public class DFS extends Generator {
-    private MazeModel mazeModel;
     private Stack<Cell> stack;
-    private Cell current;
-    private Cell next;
-
-    //@Override
-    //public void run() {
-    //}
 
     public DFS() throws Exception {
         super();
         this.stack = new Stack<>();
-        this.current = this.maze[0][0];
-        this.current.visit();
-        this.stack.push(this.current);
+        MazeModel.current.visit();
+        this.stack.push(MazeModel.current);
         System.out.println("DFS created");
     }
 
+    public Stack<Cell> getStack() {return this.stack;}
+
     public void generate() {
+        Cell next;
         //1. Get random neighbor of current cell and set it to next
-        this.next = this.getRandomNeighbor(current);
+        next = this.getRandomNeighbor(current);
         //2. If neighbor exists
-        if (this.next != null) {
+        if (next != null) {
             //1. remove the common wall between current and next
-            this.removeCommonWall(this.current, this.next);
+            this.removeCommonWall(MazeModel.current, next);
             //2. push current cell to stack
             this.stack.push(current);
+            MazeModel.current.setTemporary();
             //3. set current cell to next cell
-            this.current = this.next;
+            MazeModel.current = next;
             //4. visit current cell
-            this.current.visit();
+            MazeModel.current.visit();
         }
         //3. Else if neighbor doesn't exist
         else {
             //1. pop cell from stack and set it to current cell
-            this.current = this.stack.pop();
+            MazeModel.current.setPermanent();
+            MazeModel.current = this.stack.pop();
         }
-        this.announceChange();
         if (this.stack.isEmpty()) {
             setGenerated();
             System.out.println("DFS Maze Generated");
