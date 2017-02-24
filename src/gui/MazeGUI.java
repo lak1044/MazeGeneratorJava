@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import model.Cell;
 import model.MazeModel;
 import model.generator.DFSGenerator;
+import model.solver.BFSSolver;
 import model.solver.DFSSolver;
 
 import java.util.Observable;
@@ -38,7 +39,7 @@ public class MazeGUI extends Application implements Observer{
 
     @Override
     public void init() {
-        this.model = new MazeModel(30, 40);
+        this.model = new MazeModel(25, 25);
         this.model.addObserver(this);
     }
 
@@ -64,7 +65,17 @@ public class MazeGUI extends Application implements Observer{
                 dfsThread.start();
             } catch (Exception e) {}
         });
-        commandButtons.getChildren().addAll(generateDFSButton, solveDFSButton);
+        Button solveBFSButton = new Button("Solve BFS");
+        solveBFSButton.setOnAction(event -> {
+            try {
+                BFSSolver BfsMaze = new BFSSolver(this.model);
+                BfsMaze.addObserver(this);
+                Thread dfsThread = new Thread(BfsMaze);
+                this.model = BfsMaze;
+                dfsThread.start();
+            } catch (Exception e) {}
+        });
+        commandButtons.getChildren().addAll(generateDFSButton, solveDFSButton, solveBFSButton);
 
         return commandButtons;
     }

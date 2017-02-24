@@ -61,7 +61,7 @@ public class MazeModel extends Observable{
         }
     }
 
-    protected ArrayList<Cell> getAccessibleNeighbors(Cell cell) {
+    protected ArrayList<Cell> getRandomAccessibleNeighbors(Cell cell) {
         ArrayList<Cell> accessibleNeighbors = new ArrayList<>();
         boolean[] dirs = cell.dirs();
         if (!dirs[0] &&
@@ -84,11 +84,12 @@ public class MazeModel extends Observable{
                 !maze[cell.getRow()][cell.getCol() + 1].getVisited()) {
             accessibleNeighbors.add(maze[cell.getRow()][cell.getCol() + 1]);
         }
+        Collections.shuffle(accessibleNeighbors);
         return accessibleNeighbors;
     }
 
     protected Cell getRandomAccessibleNeighbor(Cell cell) {
-        ArrayList<Cell> accessibleNeighbors = getAccessibleNeighbors(cell);
+        ArrayList<Cell> accessibleNeighbors = getRandomAccessibleNeighbors(cell);
         if (!accessibleNeighbors.isEmpty()) {
             return accessibleNeighbors.get(new Random().nextInt(accessibleNeighbors.size()));
         } else {
