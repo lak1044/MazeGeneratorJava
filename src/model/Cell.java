@@ -15,6 +15,7 @@ public class Cell {
     private Cell parent;
     private boolean temporary;
     private boolean permanent;
+    public boolean inSolution;
 
     //private List<Cell> neigbors;
 
@@ -29,6 +30,7 @@ public class Cell {
         this.parent = null;
         this.temporary = false;
         this.permanent = false;
+        this.inSolution = false;
     }
     /////////////Getters/////////////////
     public int getRow() {return this.row;}
@@ -36,6 +38,7 @@ public class Cell {
     public boolean getVisited() {return this.visited;}
     public boolean getTemporary() {return this.temporary;}
     public boolean getPermanent() {return this.permanent;}
+    public boolean getInSolution() {return this.inSolution;}
 
     ////////////Setters////////////////
     public void setTemporary() {
@@ -45,6 +48,11 @@ public class Cell {
     public void setPermanent() {
          this.temporary = false;
          this.permanent = true;
+    }
+    public void setInSolution() {
+         this.temporary = false;
+         this.permanent = false;
+         this.inSolution = true;
     }
 
 
@@ -68,6 +76,8 @@ public class Cell {
     public void visit() {
         this.visited = true;
     }
+
+    public void unVisit() {this.visited = false;}
 
     public boolean[] dirs() {
         boolean[] dirs = new boolean[4];

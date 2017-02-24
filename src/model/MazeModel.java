@@ -11,7 +11,6 @@ public class MazeModel extends Observable{
     public static int cols;
     public static Cell current;
 
-
     public MazeModel(int rows, int cols) {
         MazeModel.rows = rows;
         MazeModel.cols = cols;
@@ -25,8 +24,13 @@ public class MazeModel extends Observable{
         System.out.println("MazeModel created");
     }
 
+    public MazeModel(MazeModel mazeModel) {
+        this.maze = mazeModel.maze;
+        System.out.println("MazeModel Created");
+    }
 
-    private ArrayList<Cell> getRandomNeighbors(Cell cell) {
+
+    protected ArrayList<Cell> getRandomNeighbors(Cell cell) {
         ArrayList<Cell> neighbors = new ArrayList<>();
         if (inMaze(cell.getRow() -1, cell.getCol()) && !maze[cell.getRow() - 1][cell.getCol()].getVisited()) {
             neighbors.add(maze[cell.getRow() - 1][cell.getCol()]);
@@ -53,13 +57,47 @@ public class MazeModel extends Observable{
         }
     }
 
+    protected ArrayList<Cell> getAccessibleNeighbors(Cell cell) {
+        ArrayList<Cell> accessibleNeighbors = new ArrayList<>();
+        boolean[] dirs = cell.dirs();
+        if (!dirs[0] &&
+                inMaze(cell.getRow() - 1, cell.getCol()) &&
+                !maze[cell.getRow() - 1][cell.getCol()].getVisited()) {
+            accessibleNeighbors.add(maze[cell.getRow() - 1][cell.getCol()]);
+        }
+        if (!dirs[1] &&
+                inMaze(cell.getRow() + 1, cell.getCol()) &&
+                !maze[cell.getRow() + 1][cell.getCol()].getVisited()) {
+            accessibleNeighbors.add(maze[cell.getRow() + 1][cell.getCol()]);
+        }
+        if (!dirs[2] &&
+                inMaze(cell.getRow(), cell.getCol() - 1) &&
+                !maze[cell.getRow()][cell.getCol() - 1].getVisited()) {
+            accessibleNeighbors.add(maze[cell.getRow()][cell.getCol() - 1]);
+        }
+        if (!dirs[3] &&
+                inMaze(cell.getRow(), cell.getCol() + 1) &&
+                !maze[cell.getRow()][cell.getCol() + 1].getVisited()) {
+            accessibleNeighbors.add(maze[cell.getRow()][cell.getCol() + 1]);
+        }
+        return accessibleNeighbors;
+    }
+
+    protected Cell getRandomAccessibleNeighbor(Cell cell) {
+        ArrayList<Cell> accessibleNeighbors = getAccessibleNeighbors(cell);
+        if (!accessibleNeighbors.isEmpty()) {
+            return accessibleNeighbors.get(new Random().nextInt(accessibleNeighbors.size()));
+        } else {
+            return null;
+        }
+    }
+
     private boolean inMaze(int row, int col) {
         return (row >= 0 && row < rows && col >= 0 && col < cols);
     }
 
 
     protected void announceChange() {
-        System.out.println("Change announced");
         setChanged();
         notifyObservers();
     }

@@ -11,9 +11,8 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import model.MazeModel;
-import model.generator.DFS;
-import model.generator.Generator;
-import sun.security.x509.GeneralName;
+import model.generator.DFSGenerator;
+import model.solver.DFSSolver;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -38,7 +37,7 @@ public class MazeGUI extends Application implements Observer{
 
     @Override
     public void init() {
-        this.model = new MazeModel(25, 25);
+        this.model = new MazeModel(10, 10);
         this.model.addObserver(this);
     }
 
@@ -47,14 +46,24 @@ public class MazeGUI extends Application implements Observer{
         Button generateDFSButton = new Button("Generate DFS");
         generateDFSButton.setOnAction(event -> {
             try {
-                DFS dfsMaze = new DFS();
+                DFSGenerator dfsMaze = new DFSGenerator();
                 dfsMaze.addObserver(this);
                 Thread dfsThread = new Thread(dfsMaze);
                 this.model = dfsMaze;
                 dfsThread.start();
             } catch (Exception e) {}
         });
-        commandButtons.getChildren().addAll(generateDFSButton);
+        Button solveDFSButton = new Button("Solve DFS");
+        solveDFSButton.setOnAction(event -> {
+            try {
+                DFSSolver dfsMaze = new DFSSolver(this.model);
+                dfsMaze.addObserver(this);
+                Thread dfsThread = new Thread(dfsMaze);
+                this.model = dfsMaze;
+                dfsThread.start();
+            } catch (Exception e) {}
+        });
+        commandButtons.getChildren().addAll(generateDFSButton, solveDFSButton);
 
         return commandButtons;
     }
@@ -74,6 +83,8 @@ public class MazeGUI extends Application implements Observer{
                     gc.setFill(Color.RED);
                 } else if (model.maze[i][j].getTemporary()) {
                     gc.setFill(Color.YELLOW);
+                } else if (model.maze[i][j].getInSolution()) {
+                    gc.setFill(Color.CYAN);
                 } else {
                     gc.setFill(Color.WHITE);
                 }

@@ -9,15 +9,15 @@ import java.util.Stack;
 /**
  * Created by lak1044 on 2/20/2017.
  */
-public class DFS extends Generator {
+public class DFSGenerator extends Generator {
     private Stack<Cell> stack;
 
-    public DFS() throws Exception {
+    public DFSGenerator() throws Exception {
         super();
         this.stack = new Stack<>();
         MazeModel.current.visit();
         this.stack.push(MazeModel.current);
-        System.out.println("DFS created");
+        System.out.println("DFSGenerator created");
     }
 
     public Stack<Cell> getStack() {return this.stack;}
@@ -25,13 +25,13 @@ public class DFS extends Generator {
     public void generate() {
         Cell next;
         //1. Get random neighbor of current cell and set it to next
-        next = this.getRandomNeighbor(current);
+        next = this.getRandomNeighbor(MazeModel.current);
         //2. If neighbor exists
         if (next != null) {
             //1. remove the common wall between current and next
             this.removeCommonWall(MazeModel.current, next);
             //2. push current cell to stack
-            this.stack.push(current);
+            this.stack.push(MazeModel.current);
             MazeModel.current.setTemporary();
             //3. set current cell to next cell
             MazeModel.current = next;
@@ -46,7 +46,7 @@ public class DFS extends Generator {
         }
         if (this.stack.isEmpty()) {
             setGenerated();
-            System.out.println("DFS Maze Generated");
+            System.out.println("DFSGenerator Maze Generated");
         }
     }
 }
