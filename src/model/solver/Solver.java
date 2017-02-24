@@ -15,7 +15,7 @@ public class Solver extends MazeModel implements Runnable {
         super(mazeModel);
         this.solved = false;
         System.out.println("Solver created");
-        this.goal = this.maze[rows - 1][cols - 1];
+        this.goal = MazeModel.end;
         for (int i = 0; i < MazeModel.rows; i++) {
             for (int j = 0; j < MazeModel.cols; j++) {
                 maze[i][j].unVisit();
@@ -36,7 +36,7 @@ public class Solver extends MazeModel implements Runnable {
             try {
                 solve();
                 announceChange();
-                Thread.sleep(20);
+                Thread.sleep(15);
             } catch (Exception e) {}
         }
     }

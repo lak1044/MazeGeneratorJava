@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import model.Cell;
 import model.MazeModel;
 import model.generator.DFSGenerator;
 import model.solver.DFSSolver;
@@ -37,7 +38,7 @@ public class MazeGUI extends Application implements Observer{
 
     @Override
     public void init() {
-        this.model = new MazeModel(10, 10);
+        this.model = new MazeModel(30, 40);
         this.model.addObserver(this);
     }
 
@@ -107,15 +108,47 @@ public class MazeGUI extends Application implements Observer{
     }
 
     private void drawCurrent() {
-        int x = MazeModel.current.getCol() * CELL_WIDTH;
-        int y = MazeModel.current.getRow() * CELL_WIDTH;
-        gc.setFill(Color.LIME);
+        if (MazeModel.current.getParent() != null) {
+            drawCell(MazeModel.current.getParent());
+        }
+        if (MazeModel.current.getChild() != null) {
+            drawCell(MazeModel.current.getChild());
+        }
+        drawCell(MazeModel.current);
+    }
+
+    private void drawCell(Cell cell) {
+        int x = cell.getCol() * CELL_WIDTH;
+        int y = cell.getRow() * CELL_WIDTH;
+        if (cell.equals(MazeModel.current)) {
+            gc.setFill(Color.LIME);
+        } else {
+            if (cell.getTemporary()) {
+                gc.setFill(Color.YELLOW);
+            } else if (cell.getPermanent()) {
+                gc.setFill(Color.RED);
+            } else if (cell.getInSolution()) {
+                gc.setFill(Color.CYAN);
+            }
+        }
         gc.fillRect(x, y, CELL_WIDTH, CELL_WIDTH);
+        boolean[] dirs = cell.dirs();
+        if (dirs[0]) {
+            gc.strokeLine(x, y, x + CELL_WIDTH, y);
+        }
+        if (dirs[1]) {
+            gc.strokeLine(x, y + CELL_WIDTH, x + CELL_WIDTH, y + CELL_WIDTH);
+        }
+        if (dirs[2]) {
+            gc.strokeLine(x, y, x, y + CELL_WIDTH);
+        }
+        if (dirs[3]) {
+            gc.strokeLine(x + CELL_WIDTH, y, x + CELL_WIDTH, y + CELL_WIDTH);
+        }
     }
 
     private void init(Stage stage) {
         borderPane = new BorderPane();
-        //borderPane.setCenter(constructMazeGrid());
         borderPane.setRight(constructCommandButtons());
         canvas = new Canvas(MazeModel.cols * CELL_WIDTH, MazeModel.rows * CELL_WIDTH);
         gc = canvas.getGraphicsContext2D();
@@ -127,7 +160,6 @@ public class MazeGUI extends Application implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
-        drawMaze();
         drawCurrent();
     }
 
@@ -138,5 +170,6 @@ public class MazeGUI extends Application implements Observer{
         primaryStage.setTitle("Maze Generator");
         primaryStage.show();
         drawMaze();
+        drawCurrent();
     }
 }

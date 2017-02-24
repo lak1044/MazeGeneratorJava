@@ -38,6 +38,8 @@ public class DFSSolver extends Solver{
             next = this.getRandomAccessibleNeighbor(MazeModel.current);
             //3. If neighbor exists
             if (next != null) {
+                next.setParent(MazeModel.current);
+                MazeModel.current.setChild(next);
                 //1. Push current to stack
                 this.stack.push(MazeModel.current);
                 //2. Set current to temporary

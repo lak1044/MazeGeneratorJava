@@ -13,6 +13,7 @@ public class Cell {
     private boolean E;
     private boolean visited;
     private Cell parent;
+    private Cell child;
     private boolean temporary;
     private boolean permanent;
     public boolean inSolution;
@@ -28,6 +29,7 @@ public class Cell {
         this.E = true;
         this.visited = false;
         this.parent = null;
+        this.child = null;
         this.temporary = false;
         this.permanent = false;
         this.inSolution = false;
@@ -39,6 +41,8 @@ public class Cell {
     public boolean getTemporary() {return this.temporary;}
     public boolean getPermanent() {return this.permanent;}
     public boolean getInSolution() {return this.inSolution;}
+    public Cell getParent() {return this.parent;}
+    public Cell getChild() {return this.child;}
 
     ////////////Setters////////////////
     public void setTemporary() {
@@ -53,6 +57,12 @@ public class Cell {
          this.temporary = false;
          this.permanent = false;
          this.inSolution = true;
+    }
+    public void setParent(Cell cell) {
+        this.parent = cell;
+    }
+    public void setChild(Cell cell) {
+        this.child = cell;
     }
 
 

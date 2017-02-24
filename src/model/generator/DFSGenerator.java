@@ -20,8 +20,6 @@ public class DFSGenerator extends Generator {
         System.out.println("DFSGenerator created");
     }
 
-    public Stack<Cell> getStack() {return this.stack;}
-
     public void generate() {
         Cell next;
         //1. Get random neighbor of current cell and set it to next
@@ -30,6 +28,8 @@ public class DFSGenerator extends Generator {
         if (next != null) {
             //1. remove the common wall between current and next
             this.removeCommonWall(MazeModel.current, next);
+            next.setParent(MazeModel.current);
+            MazeModel.current.setChild(next);
             //2. push current cell to stack
             this.stack.push(MazeModel.current);
             MazeModel.current.setTemporary();
