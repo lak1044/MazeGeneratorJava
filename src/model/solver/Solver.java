@@ -14,18 +14,19 @@ public class Solver extends MazeModel implements Runnable {
     Solver(MazeModel mazeModel) {
         super(mazeModel);
         this.solved = false;
-        System.out.println("Solver created");
         this.goal = MazeModel.end;
         for (int i = 0; i < MazeModel.rows; i++) {
             for (int j = 0; j < MazeModel.cols; j++) {
                 maze[i][j].unVisit();
             }
         }
+        System.out.println("Solver Created");
     }
 
     void setSolved() {
         this.solved = true;
         this.announceChange();
+        System.out.println("Maze Solved!");
     }
 
     public void solve() {}
@@ -36,7 +37,7 @@ public class Solver extends MazeModel implements Runnable {
             try {
                 solve();
                 announceChange();
-                Thread.sleep(15);
+                Thread.sleep(20);
             } catch (Exception e) {}
         }
     }

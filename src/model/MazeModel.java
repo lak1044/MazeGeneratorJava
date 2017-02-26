@@ -10,6 +10,7 @@ public class MazeModel extends Observable{
     public static int rows;
     public static int cols;
     public static Cell current;
+    public static Cell lastCell;
     public static Cell start;
     public static Cell end;
 
@@ -22,8 +23,9 @@ public class MazeModel extends Observable{
                 this.maze[i][j] = new Cell(i, j);
             }
         }
-        MazeModel.current = maze[0][0];
-        MazeModel.start = current;
+        MazeModel.start = maze[0][0];
+        MazeModel.current = MazeModel.start;
+        MazeModel.lastCell = null;
         MazeModel.end = this.maze[rows - 1][cols - 1];
         System.out.println("MazeModel created");
     }
@@ -92,6 +94,28 @@ public class MazeModel extends Observable{
         ArrayList<Cell> accessibleNeighbors = getRandomAccessibleNeighbors(cell);
         if (!accessibleNeighbors.isEmpty()) {
             return accessibleNeighbors.get(new Random().nextInt(accessibleNeighbors.size()));
+        } else {
+            return null;
+        }
+    }
+
+    protected Cell getRandomVisitedNeighbor(Cell cell) {
+        ArrayList<Cell> neighbors = new ArrayList<>();
+        if (inMaze(cell.getRow() -1, cell.getCol()) && maze[cell.getRow() - 1][cell.getCol()].getVisited()) {
+            neighbors.add(maze[cell.getRow() - 1][cell.getCol()]);
+        }
+        if (inMaze(cell.getRow() + 1, cell.getCol()) && maze[cell.getRow() + 1][cell.getCol()].getVisited()) {
+            neighbors.add(maze[cell.getRow() + 1][cell.getCol()]);
+        }
+        if (inMaze(cell.getRow(), cell.getCol() - 1) && maze[cell.getRow()][cell.getCol() - 1].getVisited()) {
+            neighbors.add(maze[cell.getRow()][cell.getCol() - 1]);
+        }
+        if (inMaze(cell.getRow(), cell.getCol() + 1) && maze[cell.getRow()][cell.getCol() + 1].getVisited()) {
+            neighbors.add(maze[cell.getRow()][cell.getCol() + 1]);
+        }
+        Collections.shuffle(neighbors);
+        if (!neighbors.isEmpty()) {
+            return neighbors.get(new Random().nextInt(neighbors.size()));
         } else {
             return null;
         }

@@ -14,12 +14,14 @@ public abstract class Generator extends MazeModel implements Runnable {
     Generator() {
         super(MazeModel.rows, MazeModel.cols);
         this.generated = false;
-        System.out.println("Generator created");
+        announceChange();
+        System.out.println("Generator Created");
     }
 
     void setGenerated() {
         this.generated = true;
         this.announceChange();
+        System.out.println("Maze Generated!");
     }
     public void generate() {}
 
@@ -45,7 +47,7 @@ public abstract class Generator extends MazeModel implements Runnable {
             try {
                 generate();
                 announceChange();
-                Thread.sleep(15);
+                Thread.sleep(20);
             } catch (Exception e) {}
         }
     }

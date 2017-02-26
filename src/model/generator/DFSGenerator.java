@@ -17,7 +17,7 @@ public class DFSGenerator extends Generator {
         this.stack = new Stack<>();
         MazeModel.current.visit();
         this.stack.push(MazeModel.current);
-        System.out.println("DFSGenerator created");
+        System.out.println("DFSGenerator Created");
     }
 
     public void generate() {
@@ -29,7 +29,7 @@ public class DFSGenerator extends Generator {
             //1. remove the common wall between current and next
             this.removeCommonWall(MazeModel.current, next);
             next.setParent(MazeModel.current);
-            MazeModel.current.setChild(next);
+            MazeModel.current.setChildren(next);
             //2. push current cell to stack
             this.stack.push(MazeModel.current);
             MazeModel.current.setTemporary();
@@ -46,7 +46,6 @@ public class DFSGenerator extends Generator {
         }
         if (this.stack.isEmpty()) {
             setGenerated();
-            System.out.println("DFSGenerator Maze Generated");
         }
     }
 }

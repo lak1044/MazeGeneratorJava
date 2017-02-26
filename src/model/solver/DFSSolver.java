@@ -18,7 +18,7 @@ public class DFSSolver extends Solver{
         MazeModel.current.visit();
         this.stack.push(MazeModel.current);
         this.completed = false;
-        System.out.println("DFSSolver created");
+        System.out.println("DFSSolver Created");
     }
 
     public void solve() {
@@ -27,7 +27,6 @@ public class DFSSolver extends Solver{
         //1. If current cell is goal
         if (this.stack.isEmpty()) {
             setSolved();
-            System.out.println("DFSSolver Maze Solved");
         } else if (this.completed) {
             MazeModel.current.setInSolution();
             MazeModel.current = stack.pop();
@@ -39,7 +38,7 @@ public class DFSSolver extends Solver{
             //3. If neighbor exists
             if (next != null) {
                 next.setParent(MazeModel.current);
-                MazeModel.current.setChild(next);
+                MazeModel.current.setChildren(next);
                 //1. Push current to stack
                 this.stack.push(MazeModel.current);
                 //2. Set current to temporary

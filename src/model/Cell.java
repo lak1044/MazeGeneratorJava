@@ -1,6 +1,8 @@
 package model;
 
 
+import java.util.ArrayList;
+
 /**
  * Created by lak1044 on 2/20/2017.
  */
@@ -13,7 +15,7 @@ public class Cell {
     private boolean E;
     private boolean visited;
     private Cell parent;
-    private Cell child;
+    private ArrayList<Cell> children;
     private boolean temporary;
     private boolean permanent;
     public boolean inSolution;
@@ -29,7 +31,7 @@ public class Cell {
         this.E = true;
         this.visited = false;
         this.parent = null;
-        this.child = null;
+        this.children = new ArrayList<>();
         this.temporary = false;
         this.permanent = false;
         this.inSolution = false;
@@ -42,7 +44,7 @@ public class Cell {
     public boolean getPermanent() {return this.permanent;}
     public boolean getInSolution() {return this.inSolution;}
     public Cell getParent() {return this.parent;}
-    public Cell getChild() {return this.child;}
+    public ArrayList<Cell> getChildren() {return this.children;}
 
     ////////////Setters////////////////
     public void setTemporary() {
@@ -61,8 +63,8 @@ public class Cell {
     public void setParent(Cell cell) {
         this.parent = cell;
     }
-    public void setChild(Cell cell) {
-        this.child = cell;
+    public void setChildren(Cell cell) {
+        this.children.add(cell);
     }
 
 
@@ -87,7 +89,10 @@ public class Cell {
         this.visited = true;
     }
 
-    public void unVisit() {this.visited = false;}
+    public void unVisit() {
+         this.visited = false;
+         this.setPermanent();
+     }
 
     public boolean[] dirs() {
         boolean[] dirs = new boolean[4];

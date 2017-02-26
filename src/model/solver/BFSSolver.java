@@ -23,20 +23,24 @@ public class BFSSolver extends Solver {
         ArrayList<Cell> randomNeighbors = this.getRandomAccessibleNeighbors(MazeModel.current);
         for (Cell neighbor: randomNeighbors) {
             neighbor.setParent(MazeModel.current);
-            MazeModel.current.setChild(neighbor);
+            MazeModel.current.setChildren(neighbor);
             queue.add(neighbor);
         }
         this.completed = false;
-        System.out.println("DFSSolver created");
+        System.out.println("BFSSolver created");
     }
 
     public void solve() {
         ArrayList<Cell> randomNeighbors;
-        if (this.completed) {
+        if (this.completed && MazeModel.current.equals(MazeModel.start)) {
+            setSolved();
+        } else if (this.completed) {
             MazeModel.current.setInSolution();
+            MazeModel.lastCell = MazeModel.current;
             MazeModel.current = MazeModel.current.getParent();
         } else {
             //1. Dequeue first element in queue and make it current
+            MazeModel.lastCell = MazeModel.current;
             MazeModel.current = queue.remove();
             MazeModel.current.setTemporary();
             MazeModel.current.getParent().setTemporary();
@@ -45,7 +49,7 @@ public class BFSSolver extends Solver {
             for (Cell neighbor : randomNeighbors) {
                 if (!neighbor.equals(MazeModel.current.getParent())) {
                     neighbor.setParent(MazeModel.current);
-                    MazeModel.current.setChild(neighbor);
+                    MazeModel.current.setChildren(neighbor);
                     queue.add(neighbor);
                 }
             }
@@ -54,6 +58,5 @@ public class BFSSolver extends Solver {
                 this.completed = true;
             }
         }
-
     }
 }

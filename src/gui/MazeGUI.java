@@ -13,8 +13,11 @@ import javafx.scene.control.Button;
 import model.Cell;
 import model.MazeModel;
 import model.generator.DFSGenerator;
+import model.generator.Generator;
+import model.generator.PrimsGenerator;
 import model.solver.BFSSolver;
 import model.solver.DFSSolver;
+import model.solver.Solver;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -48,34 +51,48 @@ public class MazeGUI extends Application implements Observer{
         Button generateDFSButton = new Button("Generate DFS");
         generateDFSButton.setOnAction(event -> {
             try {
-                DFSGenerator dfsMaze = new DFSGenerator();
+                Generator dfsMaze = new DFSGenerator();
                 dfsMaze.addObserver(this);
                 Thread dfsThread = new Thread(dfsMaze);
                 this.model = dfsMaze;
+                drawMaze();
+                dfsThread.start();
+            } catch (Exception e) {}
+        });
+        Button generatePrimsButton = new Button("Generate Prim's");
+        generatePrimsButton.setOnAction(event -> {
+            try {
+                Generator primsMaze = new PrimsGenerator();
+                primsMaze.addObserver(this);
+                Thread dfsThread = new Thread(primsMaze);
+                this.model = primsMaze;
+                drawMaze();
                 dfsThread.start();
             } catch (Exception e) {}
         });
         Button solveDFSButton = new Button("Solve DFS");
         solveDFSButton.setOnAction(event -> {
             try {
-                DFSSolver dfsMaze = new DFSSolver(this.model);
+                Solver dfsMaze = new DFSSolver(this.model);
                 dfsMaze.addObserver(this);
                 Thread dfsThread = new Thread(dfsMaze);
                 this.model = dfsMaze;
+                drawMaze();
                 dfsThread.start();
             } catch (Exception e) {}
         });
         Button solveBFSButton = new Button("Solve BFS");
         solveBFSButton.setOnAction(event -> {
             try {
-                BFSSolver BfsMaze = new BFSSolver(this.model);
-                BfsMaze.addObserver(this);
-                Thread dfsThread = new Thread(BfsMaze);
-                this.model = BfsMaze;
+                Solver bfsMaze = new BFSSolver(this.model);
+                bfsMaze.addObserver(this);
+                Thread dfsThread = new Thread(bfsMaze);
+                this.model = bfsMaze;
+                drawMaze();
                 dfsThread.start();
             } catch (Exception e) {}
         });
-        commandButtons.getChildren().addAll(generateDFSButton, solveDFSButton, solveBFSButton);
+        commandButtons.getChildren().addAll(generateDFSButton, generatePrimsButton, solveDFSButton, solveBFSButton);
 
         return commandButtons;
     }
@@ -122,8 +139,10 @@ public class MazeGUI extends Application implements Observer{
         if (MazeModel.current.getParent() != null) {
             drawCell(MazeModel.current.getParent());
         }
-        if (MazeModel.current.getChild() != null) {
-            drawCell(MazeModel.current.getChild());
+        if (!MazeModel.current.getChildren().isEmpty()) {
+           for (Cell cell: MazeModel.current.getChildren()) {
+               drawCell(cell);
+           }
         }
         drawCell(MazeModel.current);
     }
@@ -172,6 +191,9 @@ public class MazeGUI extends Application implements Observer{
     @Override
     public void update(Observable o, Object arg) {
         drawCurrent();
+        if (MazeModel.lastCell != null) {
+            drawCell(MazeModel.lastCell);
+        }
     }
 
     @Override
