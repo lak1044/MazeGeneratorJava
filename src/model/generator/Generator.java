@@ -47,7 +47,7 @@ public abstract class Generator extends MazeModel implements Runnable {
             try {
                 generate();
                 announceChange();
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (Exception e) {}
         }
     }

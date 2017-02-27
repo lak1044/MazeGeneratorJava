@@ -37,7 +37,7 @@ public class Solver extends MazeModel implements Runnable {
             try {
                 solve();
                 announceChange();
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (Exception e) {}
         }
     }

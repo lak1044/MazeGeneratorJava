@@ -1,9 +1,11 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -12,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import model.Cell;
 import model.MazeModel;
+import model.game.Game;
 import model.generator.DFSGenerator;
 import model.generator.Generator;
 import model.generator.PrimsGenerator;
@@ -31,18 +34,16 @@ public class MazeGUI extends Application implements Observer{
 
     private BorderPane borderPane;
 
-    private Label status;
+    private Scene scene;
 
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private static final int CELL_WIDTH = 15;
-
-    private Stage stage;
+    private static final int CELL_WIDTH = 20;
 
     @Override
     public void init() {
-        this.model = new MazeModel(25, 25);
+        this.model = new MazeModel(30, 30);
         this.model.addObserver(this);
     }
 
@@ -92,7 +93,31 @@ public class MazeGUI extends Application implements Observer{
                 dfsThread.start();
             } catch (Exception e) {}
         });
-        commandButtons.getChildren().addAll(generateDFSButton, generatePrimsButton, solveDFSButton, solveBFSButton);
+        Button gameButton = new Button("Play Game");
+        gameButton.setOnAction(event -> {
+            try {
+                Game game = new Game(this.model);
+                game.addObserver(this);
+                Thread gameThread = new Thread(game);
+                this.model = game;
+                drawMaze();
+                scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                    @Override
+                    public void handle(KeyEvent event) {
+                        switch (event.getCode()) {
+                            case UP: game.move('N'); break;
+                            case DOWN: game.move('S'); break;
+                            case LEFT: game.move('W'); break;
+                            case RIGHT: game.move('E'); break;
+                        }
+                    }
+                });
+                gameThread.start();
+            } catch (Exception e) {}
+        });
+        commandButtons.getChildren().addAll(generateDFSButton, generatePrimsButton,
+                solveDFSButton, solveBFSButton,
+                gameButton);
 
         return commandButtons;
     }
@@ -183,7 +208,7 @@ public class MazeGUI extends Application implements Observer{
         canvas = new Canvas(MazeModel.cols * CELL_WIDTH, MazeModel.rows * CELL_WIDTH);
         gc = canvas.getGraphicsContext2D();
         borderPane.setCenter(canvas);
-        Scene scene = new Scene(borderPane);
+        scene = new Scene(borderPane);
         stage.setScene(scene);
     }
 
@@ -198,7 +223,7 @@ public class MazeGUI extends Application implements Observer{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
+        //Stage stage = primaryStage;
         init(primaryStage); //do all UI initialization
         primaryStage.setTitle("Maze Generator");
         primaryStage.show();

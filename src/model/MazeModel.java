@@ -121,6 +121,21 @@ public class MazeModel extends Observable{
         }
     }
 
+    protected boolean accessible (Cell cell, char dir) {
+        boolean[] dirs = cell.dirs();
+        switch (dir) {
+            case 'N':
+                return !dirs[0];
+            case 'S':
+                return !dirs[1];
+            case 'W':
+                return !dirs[2];
+            case 'E':
+                return !dirs[3];
+        }
+        return false;
+    }
+
     private boolean inMaze(int row, int col) {
         return (row >= 0 && row < rows && col >= 0 && col < cols);
     }
